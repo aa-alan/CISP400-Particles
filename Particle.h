@@ -2,9 +2,11 @@
 #include "Matrices.h"
 #include <SFML/Graphics.hpp>
 
-const float M_PI = 3.1415926535897932384626433;
-const float G = 4;      //Gravity
+const float PI = 3.1415926535897932384626433;
+const float G = 1000;      //Gravity
 const float TTL = 5.0;  //Time To Live
+const float MIN_VEL = 100;
+const float MAX_VEL = 500;
 const float SCALE = 0.999;
 
 using namespace Matrices;
@@ -26,19 +28,19 @@ private:
     int m_numPoints;
 	Vector2f m_centerCoordinate;
     float m_radiansPerSec;
-    float vx;
-    float vy;
+    float m_vx;
+    float m_vy;
     View m_cartesianPlane;
     Color m_color1;
     Color m_color2;
     Matrix m_A;
 
     ///rotate Particle by theta radians counter-clockwise
-    ///construct a RotationMatrix R, left mulitply it by m_A
+    ///construct a RotationMatrix R, left mulitply it to m_A
     void rotate(double theta);
 
     ///Scale the size of the Particle by factor c
-    ///construct a ScalingMatrix S, left multiply it by m_A
+    ///construct a ScalingMatrix S, left multiply it to m_A
     void scale(double c);
 
     ///shift the Particle by (xShift, yShift) coordinates
