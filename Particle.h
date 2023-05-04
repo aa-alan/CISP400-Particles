@@ -3,10 +3,10 @@
 #include <SFML/Graphics.hpp>
 
 const float PI = 3.1415926535897932384626433;
-const float G = 1000;      //Gravity
+const float G = 1000;  //Gravity
 const float TTL = 5.0;  //Time To Live
-const float MIN_VEL = 100;
-const float MAX_VEL = 500;
+const int MIN_VEL = 100;
+const int MAX_VEL = 500;
 const float SCALE = 0.999;
 
 using namespace Matrices;
