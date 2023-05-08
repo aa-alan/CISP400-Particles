@@ -7,29 +7,35 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
 	m_ttl = TTL;
 
 	m_numPoints = numPoints;
-	m_radiansPerSec = (float)rand() / PI;
+	m_radiansPerSec = (float)rand() / (RAND_MAX);
+    m_radiansPerSec *= PI;
 
 	// Cartesian Plane
 	m_cartesianPlane.setCenter(0, 0);
 	m_cartesianPlane.setSize(target.getSize().x, (-1.0) * target.getSize().y);
 	m_centerCoordinate = target.mapPixelToCoords(mouseClickPosition, m_cartesianPlane);
 	
-	m_vx = rand() % (MAX_VEL - MIN_VEL) + MIN_VEL;
+    m_vx = rand() % (MAX_VEL - MIN_VEL) + MIN_VEL;
+    if (rand() % 2 == 0) { m_vx = -m_vx; }
+
 	m_vy = rand() % (MAX_VEL - MIN_VEL) + MIN_VEL;
 
 	// Pixel color
 	// color1 is center of particle, color2 is particle edge
-	Color color1 = { 255, 255, 255 };
-	Uint8 r = rand() % 255;
-	Uint8 g = rand() % 255;
-	Uint8 b = rand() % 255;
-	Color color2 = { r, g, b };
+    Color color1(255, 255, 255);
+	Uint8 r = rand() % 256;
+	Uint8 g = rand() % 256;
+	Uint8 b = rand() % 256;
+    Color color2(r, g, b);
+    m_color1 = color1;
+    m_color2 = color2;
 
-	float theta = rand() % static_cast<int>(PI / 2);
+    float theta = (float)rand() / (RAND_MAX);
+    theta *= (PI / 2.0);
 	float dTheta = 2 * PI / (numPoints - 1);
 	for (int j = 0; j < numPoints; j++)
 	{
-		size_t r = rand() % (80 - 20) + 20;
+		size_t r = rand() % (81 - 20) + 20;
 		double dx = r * cos(theta);
 		double dy = r * sin(theta);
 		theta += dTheta;
@@ -42,13 +48,14 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
 void Particle::draw(RenderTarget& target, RenderStates states) const
 {
 	VertexArray lines(TriangleFan, m_numPoints + 1);
-	Vector2f center = (Vector2f)target.mapCoordsToPixel(m_centerCoordinate);
+	Vector2f center = (Vector2f)target.mapCoordsToPixel(m_centerCoordinate, m_cartesianPlane);
 	lines[0].position = center;
 	lines[0].color = m_color1;
 
-	for (int j = 1; j < m_numPoints; j++)
+	for (int j = 1; j <= m_numPoints; j++)
 	{
-		lines[j].position = (Vector2f)target.mapCoordsToPixel(Vector2f(m_A(0, j - 1), m_A(1, j - 1)));
+		lines[j].position = (Vector2f)target.mapCoordsToPixel(
+            Vector2f(m_A(0, j - 1), m_A(1, j - 1)), m_cartesianPlane);
 		lines[j].color = m_color2;
 	}
 
